@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+  <head><title>Benchmark of Box2D Emscripted Module of DarlingJS</title></head>
+  <body>
+    <div>This is going to take a while to warm up and run. Your browser window will be locked up while it does so.</div>
+
+    <div id='echo'></div>
+
+    <script>
+    function print(msg) {
+      var echo = document.getElementById('echo');
+      echo.innerHTML += msg + '<br>';
+    }
+    </script>
+
+    <script src="../vendor/box2dEmscripten/box2d.js"></script>
+
+    <script src="../lib/darling.js"></script>
+    <script src="../lib/extensions/physics/physics.js"></script>
+    <script src="../lib/extensions/flatland/flatland.js"></script>
+    <script src="../lib/extensions/box2dEmscripten/box2dEmscriptenAdapter.js"></script>
+    <script src="init-box2demscripted.js"></script>
+    <script src="scene.js"></script>
+    <script src="run.js"></script>
+
+  </body>
+</html>
+
