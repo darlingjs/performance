@@ -30,11 +30,8 @@
             }]
         });
 
-//        var world = darlingjs.world('performance-empty', ['systemPerformance', 'ngPerformance']);
         var world = darlingjs.world('performance-empty', ['systemPerformance']);
-        //world.$add('ngPerformanceBefore');
         world.$add('updatePerformance');
-        //world.$add('ngPerformanceAfter');
 
         var components = ['updatePerformance'];
         for(var i = 0; i < COUNT; i++) {
@@ -64,11 +61,8 @@
             }]
         });
 
-//        var world = darlingjs.world('performance-empty', ['systemPerformance', 'ngPerformance']);
         var world = darlingjs.world('performance-empty', ['systemPerformance']);
-        //world.$add('ngPerformanceBefore');
         world.$add('updatePerformance');
-        //world.$add('ngPerformanceAfter');
 
         var components = ['updatePerformance'];
         for(var i = 0; i < COUNT; i++) {
