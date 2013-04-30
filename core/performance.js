@@ -34,7 +34,7 @@
     function calcStatProperites(values) {
         var meanValue = mean(values);
         var stddevValue = stddev(values, meanValue);
-        console.log('stats : mean ' + meanValue + '\nstddev:' + stddevValue);
+        console.log('darlingjs ' + darlingjs.version + '\nstats : mean ' + meanValue + '\nstddev : ' + stddevValue);
     }
 
     function mean(values) {
