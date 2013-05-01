@@ -7,10 +7,10 @@
     'use strict';
 
     //Prepare env
+    var COUNT = 1000;
 
     function worldBuilder(darlingjs, darlingutil) {
         var m = darlingjs.module('systemPerformance');
-        var COUNT = 10000;
 
         m.$c('updatePerformance', {
             time: 0.0,
@@ -37,17 +37,96 @@
         return world;
     }
 
+    function buildVanillaJSWorld() {
+        var ListNode = function() {
+            var node = {};
+            node['next'] = null;
+            node['entity'] = null;
+            return node;
+        };
+
+        var head, tail;
+
+        for(var i = 0; i < COUNT; i++) {
+            //world.$add(world.$e(components));
+            var node = new ListNode();
+            node.entity = {
+                time: 0.0,
+                count: 0.0
+            };
+            if (!tail) {
+                head = node;
+            } else {
+                tail.next = node;
+            }
+            tail = node;
+        }
+
+        return {
+            $update: function ($time) {
+                var node = head;
+                while(node) {
+                    node.entity.time += $time;
+                    node.entity.count++;
+                    node = node.next;
+                }
+            }
+        };
+    }
+
+    function buildVanillaJSWorldPrototype() {
+        var ListNode = function() {};
+        ListNode.prototype.next = null;
+        ListNode.prototype.entity = null;
+
+        var head, tail;
+
+        for(var i = 0; i < COUNT; i++) {
+            //world.$add(world.$e(components));
+            var node = new ListNode();
+            node.entity = {
+                time: 0.0,
+                count: 0.0
+            };
+            if (!tail) {
+                head = node;
+            } else {
+                tail.next = node;
+            }
+            tail = node;
+        }
+
+        return {
+            $update: function ($time) {
+                var node = head;
+                while(node) {
+                    node.entity.time += $time;
+                    node.entity.count++;
+                    node = node.next;
+                }
+            }
+        };
+    }
+
     var world_0_0_3 = worldBuilder(darlingjs_0_0_3, darlingutil_0_0_3),
-        world_0_0_4 = worldBuilder(darlingjs_0_0_4, darlingutil_0_0_4);
+        world_0_0_4 = worldBuilder(darlingjs_0_0_4, darlingutil_0_0_4),
+        world_vanilla = buildVanillaJSWorld(),
+        world_vanilla_prototype = buildVanillaJSWorldPrototype();
 
     //Run tests
 
-    var suite = new Benchmark.Suite;
+    var suite = new Benchmark.Suite();
     suite.add('$update in ver 0.0.3 (call or apply)', function() {
         world_0_0_3.$update(0.1);
     })
     .add('$update in ver 0.0.4 (member method)', function() {
         world_0_0_4.$update(0.1);
+    })
+    .add('$update in vanilla world', function() {
+        world_vanilla.$update(0.1);
+    })
+    .add('$update in vanilla prototype world', function() {
+        world_vanilla_prototype.$update(0.1);
     })
     // add listeners
     .on('cycle', function(event) {

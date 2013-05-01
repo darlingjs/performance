@@ -81,7 +81,7 @@
 
     //Run tests
 
-    var suite = new Benchmark.Suite;
+    var suite = new Benchmark.Suite();
 
     suite.add('$update in ver 0.0.3 (call or apply)', function() {
         world_0_0_3.$update(0.1);

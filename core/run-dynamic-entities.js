@@ -3,57 +3,86 @@
  * Copyright (c) 2013, Eugene-Krevenets
  */
 
-(function(darlingjs) {
+(function() {
     'use strict';
 
-    var m = darlingjs.module('systemPerformance');
-    var COUNT = 20;
-    var MAX_COUNT = 200;
+    function worldBuilder(darlingjs) {
 
-    m.$c('theComponent');
+        var m = darlingjs.module('systemPerformance');
+        var COUNT = 10;
+        var MAX_COUNT = 20;
 
-    var components = ['theComponent'];
+        m.$c('theComponent');
 
-    m.$s('theSystem', {
-        $require: ['theComponent'],
+        var components = ['theComponent'];
 
-        enabled: true,
+        m.$s('theSystem', {
+            $require: ['theComponent'],
 
-        $beforeUpdate: ['$world', '$time', '$nodes', function($world, $time, $nodes) {
-            if ($nodes.length() <= 0) {
-                this.increase = true;
-                this.decrease = false;
-            } else if ($nodes.length() >= MAX_COUNT) {
-                this.increase = false;
-                this.decrease = true;
-            }
+            increase: true,
+            decrease: false,
+            enabled: true,
 
-            if(this.increase) {
-                for(var i = 0; i < COUNT; i++) {
-                    world.$add(world.$e(components));
+            $beforeUpdate: ['$world', '$nodes', function($world, $nodes) {
+                if ($nodes.length() <= 0) {
+                    this.increase = true;
+                    this.decrease = false;
+                } else if ($nodes.length() >= MAX_COUNT) {
+                    this.increase = false;
+                    this.decrease = true;
                 }
-            }
 
-            if(this.decrease) {
-                if (this.enabled) {
-                    this.targetIndex = Math.floor($nodes.length() * Math.random());
+                if(this.increase) {
+                    for(var i = 0; i < COUNT; i++) {
+                        $world.$add($world.$e(components));
+                    }
                 }
-            }
-        }],
 
-        $update: ['$node', '$world', function($node, $world) {
-            if(this.decrease && --this.targetIndex === -1) {
-                $world.$remove($node);
-            }
-        }]
-    });
+                if(this.decrease) {
+                    if (this.enabled) {
+                        this.targetIndex = Math.floor($nodes.length() * Math.random());
+                    }
+                }
+            }],
+
+            $update: ['$node', '$world', function($node, $world) {
+                if(this.decrease && --this.targetIndex === -1) {
+                    $world.$remove($node);
+                }
+            }]
+        });
 
 
-    var world = darlingjs.world('performance-empty', ['systemPerformance', 'ngPerformance']);
-    world.$add('ngPerformanceBefore');
-    var system1 = world.$add('theSystem');
-    world.$add('ngPerformanceAfter');
+        var world = darlingjs.world('performance-empty', ['systemPerformance']);
+        world.$add('theSystem');
+        return world;
+    };
 
-    world.$start();
+    var world_0_0_3 = worldBuilder(darlingjs_0_0_3),
+        world_0_0_4 = worldBuilder(darlingjs_0_0_4),
+        world_0_0_4_local = worldBuilder(darlingjs_0_0_4_local);
 
-})(darlingjs);
+    //Run tests
+
+    var suite = new Benchmark.Suite();
+
+    suite.add('$update in ver 0.0.3 (call or apply)', function() {
+        world_0_0_3.$update(0.1);
+    })
+    .add('$update in ver 0.0.4 (member method)', function() {
+        world_0_0_4.$update(0.1);
+    })
+    .add('$update in ver 0.0.4 (local version)', function() {
+        world_0_0_4_local.$update(0.1);
+    })
+    // add listeners
+    .on('cycle', function(event) {
+        console.log(String(event.target));
+    })
+    .on('complete', function() {
+        console.log('Fastest is ' + this.filter('fastest').pluck('name'));
+    })
+    // run async
+    .run({ 'async': true });
+})();
+
