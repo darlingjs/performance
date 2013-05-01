@@ -8,11 +8,7 @@
 
     //Prepare env
 
-    var world_0_0_3,
-        world_0_0_4;
-
-    world_0_0_3 = (function(darlingjs, darlingutil) {
-
+    function worldBuilder(darlingjs, darlingutil) {
         var m = darlingjs.module('systemPerformance');
         var COUNT = 10000;
 
@@ -39,38 +35,10 @@
         }
 
         return world;
-    }) (darlingjs_0_0_3, darlingutil_0_0_3);
+    }
 
-    world_0_0_4 = (function(darlingjs, darlingutil) {
-        'use strict';
-
-        var m = darlingjs.module('systemPerformance');
-        var COUNT = 10000;
-
-        m.$c('updatePerformance', {
-            time: 0.0,
-            count: 0.0
-        });
-
-        m.$s('updatePerformance', {
-            $require: ['updatePerformance'],
-
-            $update: ['$node', '$world', '$time', function($node, $world, $time) {
-                $node.updatePerformance.time = $node.updatePerformance.time + $time;
-                $node.updatePerformance.count++;
-            }]
-        });
-
-        var world = darlingjs.world('performance-empty', ['systemPerformance']);
-        world.$add('updatePerformance');
-
-        var components = ['updatePerformance'];
-        for(var i = 0; i < COUNT; i++) {
-            world.$add(world.$e(components));
-        }
-
-        return  world;
-    }) (darlingjs_0_0_4, darlingutil_0_0_4);
+    var world_0_0_3 = worldBuilder(darlingjs_0_0_3, darlingutil_0_0_3),
+        world_0_0_4 = worldBuilder(darlingjs_0_0_4, darlingutil_0_0_4);
 
     //Run tests
 
