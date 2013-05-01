@@ -14,7 +14,8 @@
 
         m.$c('theComponent');
 
-        var components = ['theComponent'];
+        var components = ['theComponent'],
+            collectionToRemove = [];
 
         m.$s('theSystem', {
             $require: ['theComponent'],
@@ -41,14 +42,23 @@
                 if(this.decrease) {
                     if (this.enabled) {
                         this.targetIndex = Math.floor($nodes.length() * Math.random());
+                        this.targetCount = Math.floor(COUNT * Math.random());
                     }
                 }
             }],
 
             $update: ['$node', '$world', function($node, $world) {
-                if(this.decrease && --this.targetIndex === -1) {
-                    $world.$remove($node);
+                if(this.decrease && 0 <= this.targetIndex && this.targetIndex < this.targetCount) {
+                    collectionToRemove.push($node);
                 }
+                --this.targetIndex;
+            }],
+
+            $afterUpdate: ['$world', function($world) {
+                for(var i = 0, count = collectionToRemove.length; i < count; i++) {
+                    $world.$remove(collectionToRemove[i]);
+                }
+                collectionToRemove.length = 0;
             }]
         });
 
@@ -64,9 +74,11 @@
 
     //Run tests
 
-    var suite = new Benchmark.Suite();
-
-    suite.add('$update in ver 0.0.3 (call or apply)', function() {
+    new Benchmark.Suite()
+    .add('$update in ver 0.0.4 (local version)', function() {
+        world_0_0_4_local.$update(0.1);
+    })
+    .add('$update in ver 0.0.3 (call or apply)', function() {
         world_0_0_3.$update(0.1);
     })
     .add('$update in ver 0.0.4 (member method)', function() {
@@ -74,6 +86,12 @@
     })
     .add('$update in ver 0.0.4 (local version)', function() {
         world_0_0_4_local.$update(0.1);
+    })
+    .add('$update in ver 0.0.3 (call or apply)', function() {
+        world_0_0_3.$update(0.1);
+    })
+    .add('$update in ver 0.0.4 (member method)', function() {
+        world_0_0_4.$update(0.1);
     })
     // add listeners
     .on('cycle', function(event) {
