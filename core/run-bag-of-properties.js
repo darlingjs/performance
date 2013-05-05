@@ -13,7 +13,7 @@ function buildEntity() {
     return {
         $name: 'entity'
     };
-}                                                          g
+}
 
 function buildEntities(entityCount, componentCount, value) {
     var result = [];
