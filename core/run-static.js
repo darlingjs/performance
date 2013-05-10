@@ -9,7 +9,7 @@
     //Prepare env
     var COUNT = 1000;
 
-    function worldBuilder(darlingjs, darlingutil) {
+    function worldBuilder(darlingjs, darlingutil, greatThen004) {
         var m = darlingjs.module('systemPerformance');
 
         m.$c('updatePerformance', {
@@ -17,21 +17,40 @@
             count: 0.0
         });
 
-        m.$s('updatePerformance', {
-            $require: ['updatePerformance'],
+        if (greatThen004) {
+            m.$s('updatePerformance', {
+                $require: ['updatePerformance'],
 
-            $update: ['$node', '$world', '$time', function($node, $world, $time) {
-                $node.updatePerformance.time = $node.updatePerformance.time + $time;
-                $node.updatePerformance.count++;
-            }]
-        });
+                $update: ['$entity', '$world', '$time', function($entity, $world, $time) {
+                    $entity.updatePerformance.time = $entity.updatePerformance.time + $time;
+                    $entity.updatePerformance.count++;
+                }]
+            });
+        } else {
+            m.$s('updatePerformance', {
+                $require: ['updatePerformance'],
+
+                $update: ['$node', '$world', '$time', function($node, $world, $time) {
+                    $node.updatePerformance.time = $node.updatePerformance.time + $time;
+                    $node.updatePerformance.count++;
+                }]
+            });
+        }
+
 
         var world = darlingjs.world('performance-empty', ['systemPerformance']);
         world.$add('updatePerformance');
 
         var components = ['updatePerformance'];
-        for(var i = 0; i < COUNT; i++) {
-            world.$add(world.$e(components));
+        var i;
+        if (greatThen004) {
+            for(i = 0; i < COUNT; i++) {
+                world.$e(components);
+            }
+        } else {
+            for(i = 0; i < COUNT; i++) {
+                world.$add(world.$e(components));
+            }
         }
 
         return world;
@@ -108,8 +127,8 @@
         };
     }
 
-    var world_0_0_3 = worldBuilder(darlingjs_0_0_3, darlingutil_0_0_3),
-        world_0_0_4 = worldBuilder(darlingjs_0_0_4, darlingutil_0_0_4),
+    var world_0_0_3 = worldBuilder(darlingjs_0_0_3, darlingutil_0_0_3, false),
+        world_0_0_4 = worldBuilder(darlingjs_0_0_4, darlingutil_0_0_4, true),
         world_vanilla = buildVanillaJSWorld(),
         world_vanilla_prototype = buildVanillaJSWorldPrototype();
 
